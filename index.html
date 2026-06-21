@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIRHVAC MX | Climatización Residencial, Comercial e Industrial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Lato:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Lato', sans-serif; overflow-x: hidden; }
+        h1, h2, h3, h4, .font-title { font-family: 'Montserrat', sans-serif; }
+        .glass-header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); }
+        .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Animaciones Premium */
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+
+        /* Efecto Glow para el Formulario */
+        .glow-effect { box-shadow: 0 0 40px rgba(14,115,185,0.15), 0 20px 40px rgba(0,0,0,0.05); }
+        
+        /* Marquesina Infinita */
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-250px * 5)); } }
+        .slider { height: 60px; margin: auto; overflow: hidden; position: relative; width: 100%; }
+        .slider::before, .slider::after { background: linear-gradient(to right, rgba(248,250,252,1) 0%, rgba(255,255,255,0) 100%); content: ""; height: 60px; position: absolute; width: 100px; z-index: 2; }
+        .slider::after { right: 0; top: 0; transform: rotateZ(180deg); }
+        .slider::before { left: 0; top: 0; }
+        .slide-track { animation: scroll 30s linear infinite; display: flex; width: calc(250px * 10); }
+        .slide { height: 60px; width: 250px; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; color: #94a3b8; font-size: 1.25rem; letter-spacing: 0.1em; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased scroll-smooth selection:bg-[#0e73b9] selection:text-white">
+
+    <header class="fixed w-full top-0 z-50 glass-header transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center h-20 md:h-24">
+            <a href="#inicio" class="flex-shrink-0 animate-fade-up">
+                <img src="logo.png" alt="AIRHVAC MX Logo" class="h-12 md:h-20 lg:h-24 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            </a>
+            <nav class="hidden lg:flex space-x-8 font-bold text-slate-600 text-sm tracking-wide animate-fade-up delay-100">
+                <a href="#inicio" class="hover:text-[#0e73b9] transition-colors">Inicio</a>
+                <a href="#identidad" class="hover:text-[#0e73b9] transition-colors">Quiénes Somos</a>
+                <a href="#servicios" class="hover:text-[#0e73b9] transition-colors">Soluciones HVAC</a>
+                <a href="#contacto" class="hover:text-[#0e73b9] transition-colors">Contacto</a>
+            </nav>
+            <a href="https://wa.me/525610411435?text=Hola%20AIRHVAC%20MX,%20vengo%20de%20su%20sitio%20web%20y%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center gap-2.5 bg-[#25D366] text-white px-7 py-3 rounded-full font-bold text-xs hover:bg-[#20b858] hover:shadow-[0_10px_20px_rgba(37,211,102,0.3)] transform hover:-translate-y-1 transition-all duration-300 animate-fade-up delay-200">
+                <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                56 1041 1435
+            </a>
+        </div>
+    </header>
+
+    <main id="inicio" class="relative pt-32 pb-16 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
+        <div class="absolute inset-0 z-0">
+            <img src="industrial_service.png" class="w-full h-full object-cover opacity-20 mix-blend-multiply" alt="Fondo Mantenimiento">
+            <div class="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-slate-50/80"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+            <div class="lg:col-span-7 space-y-6 lg:space-y-8 pr-0 lg:pr-8">
+                <div class="inline-flex items-center gap-2 px-5 py-2 bg-white shadow-sm border border-blue-100 text-[#0e73b9] rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest animate-fade-up">
+                    <span class="w-2 h-2 rounded-full bg-[#0e73b9] animate-ping mr-1"></span>
+                    Residencial, Comercial e Industrial
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl lg:text-[4rem] font-black text-slate-900 leading-[1.1] lg:leading-[1.05] tracking-tight animate-fade-up delay-100">
+                    Confort absoluto en tu hogar. <br>
+                    Máximo rendimiento en tu empresa, <br>
+                    <span class="bg-gradient-to-r from-[#0e73b9] to-[#063b61] text-gradient">sin interrupciones.</span>
+                </h1>
+                
+                <p class="text-lg sm:text-xl text-slate-600 max-w-xl font-medium leading-relaxed animate-fade-up delay-200">
+                    En <strong>AIRHVAC MX</strong> nos adaptamos a ti. Ofrecemos desde atención rápida y cuidadosa para el clima de tu casa, hasta pólizas de mantenimiento corporativo para grandes industrias.
+                </p>
+                
+                <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm font-bold text-slate-700 pt-2 animate-fade-up delay-300">
+                    <span class="flex items-center bg-white px-4 py-2.5 rounded-lg shadow-sm border border-slate-100 hover:border-[#0e73b9] transition-colors"><svg class="w-5 h-5 text-[#0e73b9] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Hogar e Industria</span>
+                    <span class="flex items-center bg-white px-4 py-2.5 rounded-lg shadow-sm border border-slate-100 hover:border-[#0e73b9] transition-colors"><svg class="w-5 h-5 text-[#0e73b9] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Atención Rápida</span>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 relative mt-16 lg:mt-0 animate-fade-up delay-400" id="cotizar">
+                <div class="hidden sm:flex absolute -top-[100px] -right-[10px] z-30 flex-col items-end pointer-events-none">
+                    <div class="bg-white px-5 py-2.5 rounded-2xl shadow-xl text-xs font-black text-[#0e73b9] border-2 border-blue-100 mb-2 mr-16 animate-bounce" style="animation-duration: 3s;">
+                        ¡Te cotizo en 5 min!
+                        <div class="absolute -bottom-2 right-6 w-4 h-4 bg-white border-b-2 border-r-2 border-blue-100 transform rotate-45"></div>
+                    </div>
+                    <img src="kpito.png" alt="Kpito" class="w-48 lg:w-56 drop-shadow-[0_20px_30px_rgba(14,115,185,0.25)]">
+                </div>
+                
+                <div class="glass-card glow-effect p-6 sm:p-8 lg:p-10 rounded-3xl border border-white/80 relative z-10 transition-transform duration-500 hover:scale-[1.01]">
+                    <h2 class="text-2xl lg:text-3xl font-black text-slate-900 mb-2 tracking-tight">Agenda tu Revisión</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-6 font-medium">Déjanos tus datos para recibir tu cotización oficial de inmediato.</p>
+                    
+                    <form id="hvac-form" class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">Nombre / Empresa *</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="ej. Juan Pérez / Mi Empresa S.A." required class="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0e73b9] focus:outline-none transition-all placeholder:text-slate-400 text-sm font-bold text-slate-800">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">Teléfono *</label>
+                                <input type="tel" id="telefono" name="telefono" placeholder="56 1041 1435" required class="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0e73b9] focus:outline-none transition-all placeholder:text-slate-400 text-sm font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">Correo Electrónico *</label>
+                                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required class="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0e73b9] focus:outline-none transition-all placeholder:text-slate-400 text-sm font-bold text-slate-800">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">Tipo de Solicitud *</label>
+                            <div class="relative">
+                                <select id="servicio" name="servicio" required class="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0e73b9] focus:outline-none transition-all appearance-none text-sm font-bold text-slate-800 cursor-pointer">
+                                    <option value="Mantenimiento Residencial / Hogar">Servicio Residencial / Hogar</option>
+                                    <option value="Mantenimiento Comercial / Industrial">Servicio Comercial / Empresa</option>
+                                    <option value="Reparación Correctiva / Falla">Reparación Correctiva (Falla / Fuga)</option>
+                                    <option value="Cotización Especializada / Póliza">Póliza Corporativa / Proyecto Mayor</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-slate-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">Detalles Adicionales</label>
+                            <textarea id="detalles" name="detalles" rows="3" placeholder="Ej. El equipo tira agua, o requiero póliza para 3 sucursales..." class="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0e73b9] focus:outline-none transition-all placeholder:text-slate-400 text-sm font-bold text-slate-800 resize-none"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full relative overflow-hidden group bg-gradient-to-r from-[#0e73b9] to-[#0a5285] text-white font-black py-4 rounded-xl transition-all duration-300 shadow-[0_10px_20px_rgba(14,115,185,0.2)] hover:shadow-[0_15px_30px_rgba(14,115,185,0.4)] mt-2">
+                            <span class="relative z-10 flex items-center justify-center gap-2 text-xs sm:text-sm uppercase tracking-widest py-1">
+                                Solicitar Cotización
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </span>
+                            <div class="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+                        </button>
+                    </form>
+                    
+                    <div id="mensaje-exito" class="hidden absolute inset-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-10 z-20 rounded-3xl transition-all duration-500">
+                        <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                            <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <h3 class="text-slate-900 font-black text-2xl sm:text-3xl mb-2">¡Cotización en Camino!</h3>
+                        <p class="text-slate-500 text-xs sm:text-sm">Hemos recibido tu solicitud con todos los detalles. Nuestro equipo te contactará pronto.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="bg-slate-50 py-8 border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 mb-4 text-center">
+            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Trabajamos bajo estándares de las mejores marcas</span>
+        </div>
+        <div class="slider">
+            <div class="slide-track">
+                <div class="slide">CARRIER</div><div class="slide">TRANE</div><div class="slide">YORK</div><div class="slide">DAIKIN</div><div class="slide">LG HVAC</div><div class="slide">SAMSUNG</div><div class="slide">CARRIER</div><div class="slide">TRANE</div><div class="slide">YORK</div><div class="slide">DAIKIN</div>
+            </div>
+        </div>
+    </div>
+
+    <section id="identidad" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sm font-title font-black uppercase tracking-widest text-[#0e73b9]">Nuestra Identidad</span>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mt-3">Más que técnicos, somos tus aliados.</h2>
+                <p class="mt-6 text-lg text-slate-600 font-medium">En AIRHVAC MX no solo arreglamos equipos; entendemos que la temperatura de tus espacios es vital para tu familia y para el éxito de tu negocio.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-blue-100 text-[#0e73b9] rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-3">Nuestra Misión</h3>
+                    <p class="text-slate-600 font-medium leading-relaxed">Garantizar la continuidad operativa y el confort total de nuestros clientes mediante soluciones de climatización precisas, eficientes y con un tiempo de respuesta insuperable en el mercado.</p>
+                </div>
+                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-blue-100 text-[#0e73b9] rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-3">Nuestra Visión</h3>
+                    <p class="text-slate-600 font-medium leading-relaxed">Consolidarnos como la empresa referente a nivel nacional en ingeniería de mantenimiento HVAC, siendo reconocidos no solo por nuestra excelencia técnica, sino por nuestra calidad humana y honestidad.</p>
+                </div>
+                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-blue-100 text-[#0e73b9] rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-3">Nuestros Valores</h3>
+                    <ul class="space-y-2 text-slate-600 font-medium">
+                        <li class="flex items-center"><span class="w-2 h-2 rounded-full bg-[#0e73b9] mr-2"></span> <strong>Integridad:</strong> Diagnósticos 100% honestos.</li>
+                        <li class="flex items-center"><span class="w-2 h-2 rounded-full bg-[#0e73b9] mr-2"></span> <strong>Cercanía:</strong> Trato amable para tu hogar.</li>
+                        <li class="flex items-center"><span class="w-2 h-2 rounded-full bg-[#0e73b9] mr-2"></span> <strong>Excelencia:</strong> Cuidamos cada detalle técnico.</li>
+                        <li class="flex items-center"><span class="w-2 h-2 rounded-full bg-[#0e73b9] mr-2"></span> <strong>Respaldo:</strong> Garantizamos todo nuestro trabajo.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="py-20 lg:py-32 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="mb-12 md:mb-16 md:flex md:justify-between md:items-end">
+                <div class="max-w-2xl">
+                    <span class="text-sm font-title font-black uppercase tracking-widest text-[#0e73b9]">Catálogo de Servicios</span>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mt-3">Soluciones a tu medida</h2>
+                </div>
+                <p class="mt-4 md:mt-0 text-base sm:text-lg text-slate-500 font-medium max-w-md">Contamos con personal altamente calificado para cuidar desde los equipos de tu casa, hasta los de tu industria.</p>
+            </div>
+
+            <div class="space-y-12">
+                <div class="flex flex-col lg:flex-row bg-white rounded-3xl lg:rounded-[2rem] overflow-hidden shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-full lg:w-5/12 h-64 sm:h-80 lg:h-auto relative">
+                        <img src="ac_service.png" alt="Mantenimiento Preventivo" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                    <div class="w-full lg:w-7/12 p-8 sm:p-10 lg:p-14 flex flex-col justify-center">
+                        <div class="inline-flex px-4 py-1.5 bg-blue-50 text-[#0e73b9] rounded-full text-[10px] font-black uppercase tracking-widest mb-4 sm:mb-6 w-max">Hogar y Negocio</div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mb-4">Mantenimiento Preventivo</h3>
+                        <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed mb-8">El secreto para evitar gastos imprevistos. Nuestro protocolo de revisión asegura que tus equipos consuman menos energía, enfríen más rápido y extiendan su vida útil significativamente.</p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm font-bold text-slate-700">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-[#0e73b9] mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Limpieza profunda de serpentines</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-[#0e73b9] mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Revisión y carga de presiones</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-[#0e73b9] mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Ajuste de conexiones eléctricas</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-[#0e73b9] mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Eliminación de malos olores</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row-reverse bg-white rounded-3xl lg:rounded-[2rem] overflow-hidden shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-full lg:w-5/12 h-64 sm:h-80 lg:h-auto relative">
+                        <img src="heating_service.png" alt="Reparación Correctiva" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                    <div class="w-full lg:w-7/12 p-8 sm:p-10 lg:p-14 flex flex-col justify-center">
+                        <div class="inline-flex px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 sm:mb-6 w-max">Atención de Emergencia</div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mb-4">Reparación Correctiva y Fallas</h3>
+                        <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed mb-8">¿El equipo de tu casa hace ruidos extraños o dejó de enfriar la oficina? Intervenimos rápido para diagnosticar y solucionar el problema de raíz, utilizando siempre refacciones originales y garantizadas.</p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm font-bold text-slate-700">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-orange-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Diagnóstico preciso en sitio</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-orange-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Corrección de fugas de gas</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-orange-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Reemplazo de refacciones</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-orange-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Garantía de servicio por escrito</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row bg-[#0e73b9] rounded-3xl lg:rounded-[2rem] overflow-hidden shadow-2xl relative transform hover:-translate-y-1 transition-all duration-300">
+                    <div class="absolute inset-0 bg-[url('industrial_service.png')] opacity-20 bg-cover bg-center mix-blend-overlay"></div>
+                    <div class="w-full p-8 lg:p-14 flex flex-col justify-center relative z-10 text-center lg:text-left">
+                        <div class="inline-flex px-4 py-1.5 bg-white/20 text-white rounded-full text-[10px] font-black uppercase tracking-widest mb-6 mx-auto lg:mx-0 w-max backdrop-blur-sm">Proyectos a Medida B2B</div>
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-6">Pólizas Corporativas e Industriales</h3>
+                        <p class="text-blue-100 font-medium leading-relaxed mb-8 max-w-3xl lg:pr-12 text-base sm:text-lg">
+                            Diseñamos soluciones para retos mayores. Entregamos pólizas corporativas con bitácoras de servicio para múltiples sucursales, corporativos, centros de datos comerciales e industria ligera.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <a href="#cotizar" class="inline-flex items-center justify-center bg-white text-[#0e73b9] font-black px-8 py-4 rounded-xl hover:bg-slate-50 transition-colors shadow-lg text-sm sm:text-base">
+                                Solicitar Póliza B2B <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacto" class="bg-slate-900 pt-16 pb-8 border-t-[6px] border-[#0e73b9]">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b border-slate-800 pb-12">
+            <div>
+                <div class="bg-white inline-flex p-3 rounded-2xl mb-6 shadow-lg">
+                    <img src="logo.png" alt="AIRHVAC MX" class="h-10 sm:h-12 object-contain">
+                </div>
+                <p class="text-slate-400 font-medium leading-relaxed text-sm">Somos tu aliado estratégico en mantenimiento preventivo, correctivo y cuidado corporativo de sistemas de climatización para el hogar y la industria en México.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest text-xs mb-6">Atención Inmediata</h4>
+                <div class="space-y-4">
+                    <a href="https://wa.me/525610411435?text=Hola%20AIRHVAC%20MX,%20vengo%20de%20su%20sitio%20web%20y%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="flex items-center text-slate-400 hover:text-[#25D366] transition-colors group text-sm">
+                        <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-[#25D366] transition-colors">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                        </span> 
+                        56 1041 1435
+                    </a>
+                    <a href="mailto:ventas@ahvacmx.com" class="flex items-center text-slate-400 hover:text-white transition-colors group text-sm"><span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-[#0e73b9] transition-colors"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span> ventas@ahvacmx.com</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest text-xs mb-6">Avisos Legales</h4>
+                <ul class="space-y-3 text-slate-400 font-medium text-sm">
+                    <li><button onclick="openModal('modal-privacidad')" class="hover:text-[#0e73b9] transition-colors text-left w-full">Aviso de Privacidad</button></li>
+                    <li><button onclick="openModal('modal-ia')" class="hover:text-[#0e73b9] transition-colors text-left w-full">Transparencia y Uso de IA</button></li>
+                    <li><a href="#servicios" class="hover:text-[#0e73b9] transition-colors">Ver Catálogo Completo</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center text-slate-600 text-xs font-medium">
+            &copy; 2026 AIRHVAC MX. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300" onclick="closeAllModals()"></div>
+
+    <div id="modal-privacidad" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-2xl bg-white rounded-3xl p-8 z-[70] hidden opacity-0 transition-all duration-300 scale-95 shadow-2xl max-h-[85vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-black text-slate-900">Aviso de Privacidad</h3>
+            <button onclick="closeAllModals()" class="text-slate-400 hover:text-rose-500 transition-colors bg-slate-100 rounded-full p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+        <div class="space-y-4 text-sm text-slate-600 font-medium leading-relaxed">
+            <p>En <strong>AIRHVAC MX</strong>, valoramos su privacidad y nos comprometemos a proteger celosamente sus datos personales.</p>
+            <p><strong>Uso de la información:</strong> Los datos recopilados a través de nuestros formularios se utilizan exclusivamente para procesar su solicitud, contactarle para brindar atención técnica y agendar servicios.</p>
+            <p><strong>Protección de datos:</strong> Empleamos protocolos de seguridad estándar en la industria para evitar el acceso no autorizado a su información.</p>
+            <p><strong>No compartimos sus datos:</strong> Su información personal jamás será vendida, alquilada ni compartida con terceros ajenos a AIRHVAC MX sin su consentimiento explícito.</p>
+            <p>Para ejercer sus derechos ARCO, contáctenos a través de: <a href="mailto:ventas@ahvacmx.com" class="text-[#0e73b9] font-bold">ventas@ahvacmx.com</a>.</p>
+        </div>
+    </div>
+
+    <div id="modal-ia" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-2xl bg-white rounded-3xl p-8 z-[70] hidden opacity-0 transition-all duration-300 scale-95 shadow-2xl max-h-[85vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-black text-slate-900">Transparencia y Uso de IA</h3>
+            <button onclick="closeAllModals()" class="text-slate-400 hover:text-rose-500 transition-colors bg-slate-100 rounded-full p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+        <div class="space-y-4 text-sm text-slate-600 font-medium leading-relaxed">
+            <p>Con el fin de ofrecerle una experiencia digital rápida y eficiente, en <strong>AIRHVAC MX</strong> integramos herramientas de Inteligencia Artificial (IA) en áreas específicas:</p>
+            <ul class="list-disc pl-5 space-y-2">
+                <li><strong>Desarrollo Web:</strong> La estructura y diseño visual de este sitio han sido optimizados con IA.</li>
+                <li><strong>Elementos Visuales:</strong> Algunas imágenes (incluyendo a nuestra mascota corporativa "Kpito") han sido generadas o mejoradas mediante IA.</li>
+            </ul>
+            <p class="bg-blue-50 text-[#0e73b9] p-4 rounded-xl border border-blue-100 font-bold mt-4">
+                Queremos asegurarle que la ejecución del servicio técnico, el mantenimiento y el diagnóstico en sitio SIEMPRE son realizados por nuestros ingenieros humanos expertos.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                modal.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeAllModals() {
+            const overlay = document.getElementById('modal-overlay');
+            const modals = document.querySelectorAll('[id^="modal-"]');
+            overlay.classList.add('opacity-0');
+            modals.forEach(modal => {
+                if (modal.id !== 'modal-overlay') {
+                    modal.classList.add('opacity-0', 'scale-95');
+                }
+            });
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                modals.forEach(modal => {
+                    if (modal.id !== 'modal-overlay') {
+                        modal.classList.add('hidden');
+                    }
+                });
+                document.body.style.overflow = ''; 
+            }, 300);
+        }
+
+        const supabaseUrl = 'https://kvntozwuwnyluzqxzqsp.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bnRvend1d255bHV6cXh6cXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5OTg0MjgsImV4cCI6MjA5NzU3NDQyOH0.nS3uqEYmrIRqF8y4p4V5fKTCXeRxZKXoB-iOJyIdOxo';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('hvac-form');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const nombre = document.getElementById('nombre').value.trim();
+                    const telefono = document.getElementById('telefono').value.trim();
+                    const correo = document.getElementById('correo').value.trim();
+                    const servicio = document.getElementById('servicio').value;
+                    const detalles = document.getElementById('detalles').value.trim(); // NUEVO CAMPO CAPTURADO
+                    const submitBtn = form.querySelector('button[type="submit"]');
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="relative z-10 flex items-center justify-center gap-2 text-xs sm:text-sm uppercase tracking-widest py-1">Enviando Datos...</span>';
+
+                    try {
+                        const { data, error } = await supabaseClient
+                            .from('solicitudes_presupuesto')
+                            .insert([{
+                                nombre: nombre,
+                                telefono: telefono,
+                                correo: correo,
+                                servicio_requerido: servicio,
+                                detalles: detalles // NUEVO CAMPO ENVIADO
+                            }]);
+
+                        if (error) throw error;
+
+                        document.getElementById('mensaje-exito').classList.remove('hidden');
+                        form.reset();
+
+                    } catch (err) {
+                        console.error("Error al enviar:", err);
+                        alert("Hubo un problema al enviar. Verifica tu conexión e intenta de nuevo.");
+                    } finally {
+                        if (submitBtn.disabled) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<span class="relative z-10 flex items-center justify-center gap-2 text-xs sm:text-sm uppercase tracking-widest py-1">Solicitar Cotización <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
