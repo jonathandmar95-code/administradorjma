@@ -3,64 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIRHVAC MX | Gestor de Leads</title>
+    <title>AIRHVAC MX | Panel de Control Blindado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Lato', sans-serif; }
         h1, h2, h3, h4, .font-title { font-family: 'Montserrat', sans-serif; }
-        /* Animación suave para cuando desaparece una tarjeta */
         .fade-out { opacity: 0; transform: scale(0.9); transition: all 0.4s ease-out; pointer-events: none; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
 
-    <header class="bg-slate-900 border-b border-slate-800 py-5 sticky top-0 z-40 shadow-xl">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <h1 class="font-title font-black text-2xl tracking-tight text-white flex items-center gap-3">
-                <span class="text-[#0e73b9]">⚡</span> AIRHVAC MX <span class="text-xs bg-slate-800 text-slate-500 px-3 py-1 rounded-full font-bold border border-slate-700">Panel Operativo</span>
-            </h1>
-            <div class="flex items-center gap-2">
-                <span class="relative flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                <span class="text-sm font-bold text-emerald-400">En Vivo</span>
+    <div id="pantalla-login" class="fixed inset-0 bg-slate-950 flex items-center justify-center z-50 px-4">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
+            <span class="text-4xl">🔒</span>
+            <h2 class="font-title font-black text-xl text-white mt-4 mb-2">Panel Privado Seguro</h2>
+            <p class="text-slate-500 text-xs mb-6">Introduce la clave de AIRHVAC MX para desencriptar</p>
+            
+            <input type="password" id="pass-input" placeholder="Contraseña Secreta" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-center focus:ring-2 focus:ring-[#0e73b9] focus:outline-none mb-4 font-bold tracking-widest text-white">
+            <button onclick="verificarAcceso()" class="w-full bg-[#0e73b9] hover:bg-[#0b5c94] text-white font-bold py-3 rounded-xl text-sm transition-all shadow-lg active:scale-95">
+                Desbloquear Sistema
+            </button>
+            <p id="error-login" class="text-rose-500 text-xs font-bold mt-4 hidden">❌ Contraseña incorrecta. Acceso denegado.</p>
+        </div>
+    </div>
+
+    <div id="panel-principal" class="hidden">
+        <header class="bg-slate-900 border-b border-slate-800 py-5 sticky top-0 z-40 shadow-xl">
+            <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                <h1 class="font-title font-black text-2xl tracking-tight text-white flex items-center gap-3">
+                    <span class="text-[#0e73b9]">🛡️</span> AIRHVAC MX <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full font-bold border border-emerald-500/20">Panel Alta Seguridad</span>
+                </h1>
+                <button onclick="cargarSolicitudes()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-5 py-2.5 rounded-xl transition-all border border-slate-700 active:scale-95">
+                    🔄 Actualizar Datos
+                </button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <nav class="bg-slate-900 border-b border-slate-800 sticky top-[73px] z-30">
-        <div class="max-w-7xl mx-auto px-6 flex gap-1">
-            <button onclick="cambiarPestaña('Pendiente')" id="tab-Pendiente" class="py-4 px-5 text-sm font-black uppercase tracking-wider border-b-4 border-[#0e73b9] text-white flex items-center gap-2">
-                📥 Solicitudes Nuevas <span id="badge-pendientes" class="bg-[#0e73b9] text-white text-[10px] px-2 py-0.5 rounded-md hidden">0</span>
-            </button>
-            <button onclick="cambiarPestaña('Atendido')" id="tab-Atendido" class="py-4 px-5 text-sm font-bold uppercase tracking-wider border-b-4 border-transparent text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2">
-                ✅ Histórico / Atendidos
-            </button>
-        </div>
-    </nav>
+        <nav class="bg-slate-900 border-b border-slate-800 sticky top-[73px] z-30">
+            <div class="max-w-7xl mx-auto px-6 flex gap-1">
+                <button onclick="cambiarPestaña('Pendiente')" id="tab-Pendiente" class="py-4 px-5 text-sm font-black uppercase tracking-wider border-b-4 border-[#0e73b9] text-white flex items-center gap-2">
+                    📥 Solicitudes Nuevas <span id="badge-pendientes" class="bg-[#0e73b9] text-white text-[10px] px-2 py-0.5 rounded-md hidden">0</span>
+                </button>
+                <button onclick="cambiarPestaña('Atendido')" id="tab-Atendido" class="py-4 px-5 text-sm font-bold uppercase tracking-wider border-b-4 border-transparent text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2">
+                    ✅ Histórico / Atendidos
+                </button>
+            </div>
+        </nav>
 
-    <main class="max-w-7xl mx-auto px-6 pt-10">
-        <div id="contenedor-leads" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="col-span-full text-center py-12 text-slate-600 font-bold animate-pulse">Cargando base de datos...</div>
-        </div>
-    </main>
+        <main class="max-w-7xl mx-auto px-6 pt-10">
+            <div id="contenedor-leads" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </main>
+    </div>
 
     <script>
-        // Credenciales (Son las mismas de index, ahora accesibles públicamente para leer)
         const supabaseUrl = 'https://kvntozwuwnyluzqxzqsp.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bnRvend1d255bHV6cXh6cXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5OTg0MjgsImV4cCI6MjA5NzU3NDQyOH0.nS3uqEYmrIRqF8y4p4V5fKTCXeRxZKXoB-iOJyIdOxo';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
         
-        let pestañaActual = 'Pendiente'; // Estado inicial
+        let contrasenaMaestra = "";
+        let pestañaActual = 'Pendiente';
+        let todosLosLeads = []; // Guardamos localmente para filtrar rápido
 
-        // Función para cambiar entre 'Pendiente' y 'Atendido'
+        document.getElementById('pass-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verificarAcceso();
+        });
+
+        // 1. LOGIN SEGURO VIA RPC
+        async function verificarAcceso() {
+            const input = document.getElementById('pass-input').value;
+            const errorTxt = document.getElementById('error-login');
+            
+            const { data, error } = await supabaseClient.rpc('ver_solicitudes_seguras', { pass: input });
+
+            if (error || !data || (data.length === 0 && input !== 'AIRHVAC2026!')) {
+                errorTxt.classList.remove('hidden');
+                return;
+            }
+
+            // Guardar clave en memoria volatil y saltar al panel
+            contrasenaMaestra = input;
+            document.getElementById('pantalla-login').classList.add('hidden');
+            document.getElementById('panel-principal').classList.remove('hidden');
+            
+            todosLosLeads = data;
+            filtrarYRenderizar();
+        }
+
+        // 2. RE-COLECCIÓN DE DATOS
+        async function cargarSolicitudes() {
+            const { data, error } = await supabaseClient.rpc('ver_solicitudes_seguras', { pass: contrasenaMaestra });
+            if (!error) {
+                todosLosLeads = data;
+                filtrarYRenderizar();
+            }
+        }
+
+        // 3. CAMBIAR PESTAÑA
         function cambiarPestaña(nuevaPestaña) {
             pestañaActual = nuevaPestaña;
-            
-            // Actualizar Estilos Visuales de las pestañas
             const tabs = ['Pendiente', 'Atendido'];
             tabs.forEach(tab => {
                 const el = document.getElementById(`tab-${tab}`);
@@ -72,131 +114,104 @@
                     el.classList.add('border-transparent', 'text-slate-500', 'font-bold');
                 }
             });
-
-            // Recargar los datos filtrados
-            cargarSolicitudes();
+            filtrarYRenderizar();
         }
 
-        // Función principal de carga de datos
-        async function cargarSolicitudes() {
+        // 4. RENDERIZADO FILTRADO INTERNO
+        function filtrarYRenderizar() {
             const contenedor = document.getElementById('contenedor-leads');
             const badge = document.getElementById('badge-pendientes');
             
-            try {
-                // CONSULTA SIMPLE (Baja Seguridad): Filtramos por la columna 'estado'
-                const { data, error } = await supabaseClient
-                    .from('solicitudes_presupuesto')
-                    .select('*')
-                    .eq('estado', pestañaActual) // <--- CRÍTICO: Filtro de pestaña
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
-
-                contenedor.innerHTML = '';
-
-                // Actualizar el contador de notificaciones (badge) solo para pendientes
-                if(pestañaActual === 'Pendiente') {
-                    if(data.length > 0) {
-                        badge.innerText = data.length;
-                        badge.classList.remove('hidden');
-                    } else {
-                        badge.classList.add('hidden');
-                    }
-                }
-
-                if(data.length === 0) {
-                    const mensaje = pestañaActual === 'Pendiente' ? '¡Bandeja de entrada limpia! No hay solicitudes nuevas.' : 'El histórico está vacío.';
-                    contenedor.innerHTML = `<div class="col-span-full text-center py-20 text-slate-600 font-bold border-2 border-dashed border-slate-800 rounded-3xl">${mensaje}</div>`;
-                    return;
-                }
-
-                // Generar tarjetas HTML
-                data.forEach(lead => {
-                    const fecha = lead.fecha_solicitud ? new Date(lead.fecha_solicitud).toLocaleString('es-MX') : 'No registrada';
-                    
-                    // Lógica del botón de acción (solo sale en Pendientes)
-                    const botonAccion = pestañaActual === 'Pendiente' 
-                        ? `<button onclick="marcarComoAtendido(${lead.id})" class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl transition-colors shadow-lg active:scale-95 w-full">
-                                Marcar como Atendido ✅
-                           </button>`
-                        : `<div class="text-center text-[10px] text-emerald-500 font-bold bg-emerald-500/10 py-2 rounded-lg border border-emerald-500/20">Solicitud Finalizada y Archivada</div>`;
-
-                    contenedor.innerHTML += `
-                        <div id="card-${lead.id}" class="bg-slate-900 border border-slate-800 rounded-3xl p-7 shadow-xl relative group hover:border-[#0e73b9]/40 transition-all duration-300 flex flex-col">
-                            <div class="flex justify-between items-start mb-5">
-                                <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/10">
-                                    ${lead.servicio_requerido || 'General'}
-                                </span>
-                                <span class="text-[10px] text-slate-600 font-bold">${fecha}</span>
-                            </div>
-                            
-                            <h3 class="text-xl font-bold text-white mb-1 tracking-tight">${lead.nombre}</h3>
-                            
-                            <div class="space-y-2.5 my-5 text-sm font-medium text-slate-300 border-y border-slate-800 py-4">
-                                <p class="flex items-center gap-2.5"><span class="text-slate-600 text-xs">📞</span> <a href="tel:${lead.telefono}" class="hover:text-blue-400 transition-colors font-bold">${lead.telefono}</a></p>
-                                <p class="flex items-center gap-2.5 truncate"><span class="text-slate-600 text-xs">✉️</span> <a href="mailto:${lead.correo}" class="hover:text-blue-400 transition-colors font-bold">${lead.correo}</a></p>
-                            </div>
-
-                            <div class="mb-8 flex-grow">
-                                <h4 class="text-[10px] uppercase font-black tracking-widest text-slate-600 mb-1.5">Comentarios del Cliente:</h4>
-                                <p class="text-xs text-slate-400 leading-relaxed bg-slate-950 p-4 rounded-2xl min-h-[60px] border border-slate-800 font-medium">
-                                    ${lead.detalles || '<i>El cliente no dejó comentarios adicionales.</i>'}
-                                </p>
-                            </div>
-
-                            <div class="space-y-3 mt-auto">
-                                ${pestañaActual === 'Pendiente' ? `
-                                <div class="grid grid-cols-2 gap-3">
-                                    <a href="https://wa.me/${lead.telefono.replace(/\s+/g, '')}" target="_blank" class="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-colors border border-slate-700/60">
-                                        WhatsApp
-                                    </a>
-                                    <a href="tel:${lead.telefono}" class="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-colors border border-slate-700/60">
-                                        Llamar
-                                    </a>
-                                </div>
-                                ` : ''}
-                                ${botonAccion}
-                            </div>
-                        </div>
-                    `;
-                });
-
-            } catch (err) {
-                console.error("Error fatal de conexión:", err);
-                contenedor.innerHTML = '<div class="col-span-full text-center py-12 text-rose-400 font-bold bg-rose-500/10 rounded-2xl border border-rose-500/20">Error crítico al conectar con Supabase. Verifica la consola.</div>';
+            // Separar listas
+            const pendientes = todosLosLeads.filter(l => l.estado === 'Pendiente');
+            const atendidos = todosLosLeads.filter(l => l.estado === 'Atendido');
+            
+            // Actualizar Badge de notificaciones
+            if (pendientes.length > 0) {
+                badge.innerText = pendientes.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
             }
+
+            const listaFiltrada = pestañaActual === 'Pendiente' ? pendientes : atendidos;
+            contenedor.innerHTML = '';
+
+            if(listaFiltrada.length === 0) {
+                const msg = pestañaActual === 'Pendiente' ? '¡Excelente! No hay solicitudes pendientes.' : 'El archivo histórico está vacío.';
+                contenedor.innerHTML = `<div class="col-span-full text-center py-20 text-slate-600 font-bold border-2 border-dashed border-slate-800 rounded-3xl">${msg}</div>`;
+                return;
+            }
+
+            listaFiltrada.forEach(lead => {
+                const fecha = lead.fecha_solicitud ? new Date(lead.fecha_solicitud).toLocaleString('es-MX') : 'No registrada';
+                const botonAccion = pestañaActual === 'Pendiente' 
+                    ? `<button onclick="marcarComoAtendido(${lead.id})" class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl transition-colors shadow-lg active:scale-95 w-full">
+                            Marcar como Atendido ✅
+                       </button>`
+                    : `<div class="text-center text-[10px] text-emerald-500 font-bold bg-emerald-500/10 py-2 rounded-lg border border-emerald-500/20">Solicitud Atendida y Archivada</div>`;
+
+                contenedor.innerHTML += `
+                    <div id="card-${lead.id}" class="bg-slate-900 border border-slate-800 rounded-3xl p-7 shadow-xl relative flex flex-col hover:border-[#0e73b9]/30 transition-all duration-300">
+                        <div class="flex justify-between items-start mb-5">
+                            <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/10">
+                                ${lead.servicio_requerido || 'General'}
+                            </span>
+                            <span class="text-[10px] text-slate-600 font-bold">${fecha}</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-white mb-1 truncate tracking-tight">${lead.nombre}</h3>
+                        
+                        <div class="space-y-2.5 my-5 text-sm font-medium text-slate-300 border-y border-slate-800 py-4">
+                            <p class="flex items-center gap-2.5"><span class="text-slate-600 text-xs">📞</span> <a href="tel:${lead.telefono}" class="hover:text-blue-400 transition-colors font-bold">${lead.telefono}</a></p>
+                            <p class="flex items-center gap-2.5 truncate"><span class="text-slate-600 text-xs">✉️</span> <a href="mailto:${lead.correo}" class="hover:text-blue-400 transition-colors font-bold">${lead.correo}</a></p>
+                        </div>
+
+                        <div class="mb-8 flex-grow">
+                            <h4 class="text-[10px] uppercase font-black tracking-widest text-slate-600 mb-1.5">Comentarios del Cliente:</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed bg-slate-950 p-4 rounded-2xl min-h-[60px] border border-slate-800 font-medium">
+                                ${lead.detalles || '<i>El cliente no dejó comentarios adicionales.</i>'}
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 mt-auto">
+                            ${pestañaActual === 'Pendiente' ? `
+                            <div class="grid grid-cols-2 gap-3">
+                                <a href="https://wa.me/${lead.telefono.replace(/\s+/g, '')}" target="_blank" class="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-colors border border-slate-700/60">WhatsApp</a>
+                                <a href="tel:${lead.telefono}" class="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-colors border border-slate-700/60">Llamar</a>
+                            </div>
+                            ` : ''}
+                            ${botonAccion}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        // FUNCIÓN MÁGICA: Mover de Pendiente a Atendido
+        // 5. ACTUALIZACIÓN SEGURA DE ESTADO
         async function marcarComoAtendido(idLead) {
             const tarjeta = document.getElementById(`card-${idLead}`);
-            
-            // 1. Efecto visual inmediato (fade out)
             tarjeta.classList.add('fade-out');
 
             try {
-                // 2. Actualizar en Supabase: Cambiamos 'Pendiente' por 'Atendido'
-                const { error } = await supabaseClient
-                    .from('solicitudes_presupuesto')
-                    .update({ estado: 'Atendido' })
-                    .eq('id', idLead);
+                // Ejecutamos la función RPC pasándole la contraseña para autorizar el cambio
+                const { data, error } = await supabaseClient.rpc('marcar_atendido_seguro', { 
+                    id_lead: idLead, 
+                    pass: contrasenaMaestra 
+                });
 
                 if (error) throw error;
 
-                // 3. Esperar a que termine la animación y recargar
                 setTimeout(() => {
-                    cargarSolicitudes(); // Recarga la pestaña actual (desaparecerá la tarjeta)
+                    cargarSolicitudes(); // Recarga todo desde el servidor de forma segura
                 }, 400);
 
             } catch (err) {
-                console.error("Error al actualizar estado:", err);
-                tarjeta.classList.remove('fade-out'); // Revertir efecto si hay error
-                alert("Hubo un error al archivar la solicitud. Intenta de nuevo.");
+                console.error(err);
+                tarjeta.classList.remove('fade-out');
+                alert("Error de autenticación al archivar. Intenta de nuevo.");
             }
         }
-
-        // Cargar automáticamente al entrar (Baja Seguridad = Entra directo)
-        document.addEventListener('DOMContentLoaded', cargarSolicitudes);
     </script>
 </body>
 </html>
